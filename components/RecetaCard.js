@@ -1,20 +1,28 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function RecetaCard({ receta }) {
+export default function RecetaCard({ receta, onEliminar, onEditar }) {
   return (
-    <TouchableOpacity style={styles.card}>
+    <View style={styles.card}>
       {receta.imagen ? (
         <Image source={{ uri: receta.imagen }} style={styles.imagen} />
       ) : (
         <View style={[styles.imagen, styles.placeholder]} />
       )}
+
       <View style={styles.info}>
         <Text style={styles.titulo}>{receta.titulo}</Text>
-        <Text style={styles.descripcion} numberOfLines={2}>
-          {receta.descripcion}
-        </Text>
+        <Text style={styles.descripcion} numberOfLines={2}>{receta.descripcion}</Text>
+
+        <View style={styles.botones}>
+          <TouchableOpacity onPress={() => onEditar(receta)}>
+            <Text style={styles.botonEditar}>✏️ Editar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => onEliminar(receta.id)}>
+            <Text style={styles.botonEliminar}>🗑 Eliminar</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
@@ -49,5 +57,18 @@ const styles = StyleSheet.create({
   descripcion: {
     fontSize: 14,
     color: '#555',
+  },
+  botones: {
+    flexDirection: 'row',
+    gap: 16,
+    marginTop: 10,
+  },
+  botonEditar: {
+    color: '#1E88E5',
+    fontWeight: 'bold',
+  },
+  botonEliminar: {
+    color: '#E53935',
+    fontWeight: 'bold',
   },
 });

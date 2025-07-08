@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
   Alert,
@@ -14,28 +14,57 @@ import {
 
 export default function AgregarReceta() {
   const router = useRouter();
-  const [titulo, setTitulo] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [imagenUri, setImagenUri] = useState<string | null>(null);
+  const params = useLocalSearchParams();
 
-  const seleccionarImagen = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permiso requerido', 'Se necesita acceso a la galería');
+  // Si viene receta por params (modo edición)
+  const recetaAEditar = params.receta ? JSON.parse(params.receta as string) : null;
+
+  // Estado
+  const [titulo, setTitulo] = useState(recetaAEditar?.titulo || '');
+  const [descripcion, setDescripcion] = useState(recetaAEditar?.descripcion || '');
+  const [imagenUri, setImagenUri] = useState<string | null>(recetaAEditar?.imagen || null);
+
+  // Función para seleccionar imagen (cámara o galería)
+  const elegirImagen = async () => {
+    const permisoCamara = await ImagePicker.requestCameraPermissionsAsync();
+    const permisoGaleria = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permisoCamara.status !== 'granted' || permisoGaleria.status !== 'granted') {
+      Alert.alert('Permiso denegado', 'Se necesitan permisos para continuar.');
       return;
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImagenUri(result.assets[0].uri);
-    }
+    Alert.alert('Seleccionar imagen', '¿Desde dónde quieres agregar la imagen?', [
+      {
+        text: 'Tomar Foto',
+        onPress: async () => {
+          const result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            quality: 1,
+          });
+          if (!result.canceled) {
+            setImagenUri(result.assets[0].uri);
+          }
+        },
+      },
+      {
+        text: 'Elegir de Galería',
+        onPress: async () => {
+          const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+          });
+          if (!result.canceled) {
+            setImagenUri(result.assets[0].uri);
+          }
+        },
+      },
+      { text: 'Cancelar', style: 'cancel' },
+    ]);
   };
 
+  // Guardar o actualizar receta
   const guardarReceta = async () => {
     if (!titulo.trim() || !descripcion.trim()) {
       Alert.alert('Error', 'Por favor llena todos los campos');
@@ -43,20 +72,30 @@ export default function AgregarReceta() {
     }
 
     try {
-      const nuevaReceta = {
-        id: Date.now().toString(),
-        titulo,
-        descripcion,
-        imagen: imagenUri, // guarda la URI si hay
-      };
-
       const recetasGuardadas = await AsyncStorage.getItem('recetas');
-      const recetas = recetasGuardadas ? JSON.parse(recetasGuardadas) : [];
+      let recetas = recetasGuardadas ? JSON.parse(recetasGuardadas) : [];
 
-      recetas.push(nuevaReceta);
+      if (recetaAEditar) {
+        // Editar
+        recetas = recetas.map((r: any) =>
+          r.id === recetaAEditar.id
+            ? { ...r, titulo, descripcion, imagen: imagenUri }
+            : r
+        );
+      } else {
+        // Agregar nueva
+        const nuevaReceta = {
+          id: Date.now().toString(),
+          titulo,
+          descripcion,
+          imagen: imagenUri,
+        };
+        recetas.push(nuevaReceta);
+      }
+
       await AsyncStorage.setItem('recetas', JSON.stringify(recetas));
 
-      Alert.alert('Éxito', 'Receta guardada correctamente');
+      Alert.alert('Éxito', recetaAEditar ? 'Receta actualizada' : 'Receta guardada');
       setTitulo('');
       setDescripcion('');
       setImagenUri(null);
@@ -69,7 +108,9 @@ export default function AgregarReceta() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Agregar Receta</Text>
+      <Text style={styles.title}>
+        {recetaAEditar ? 'Editar Receta' : 'Agregar Receta'}
+      </Text>
 
       <TextInput
         placeholder="Título"
@@ -87,8 +128,13 @@ export default function AgregarReceta() {
         numberOfLines={4}
       />
 
-      <TouchableOpacity style={[styles.button, { marginBottom: 10 }]} onPress={seleccionarImagen}>
-        <Text style={styles.buttonText}>Seleccionar Imagen</Text>
+      <TouchableOpacity
+        style={[styles.button, { marginBottom: 10 }]}
+        onPress={elegirImagen}
+      >
+        <Text style={styles.buttonText}>
+          {imagenUri ? 'Cambiar Imagen' : 'Agregar Imagen'}
+        </Text>
       </TouchableOpacity>
 
       {imagenUri && (
@@ -99,7 +145,9 @@ export default function AgregarReceta() {
       )}
 
       <TouchableOpacity style={styles.button} onPress={guardarReceta}>
-        <Text style={styles.buttonText}>Guardar Receta</Text>
+        <Text style={styles.buttonText}>
+          {recetaAEditar ? 'Actualizar Receta' : 'Guardar Receta'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
