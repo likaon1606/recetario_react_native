@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -25,19 +26,43 @@ export default function TabLayout() {
           },
           default: {},
         }),
-      }}>
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name='index'
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name='house.fill' color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name='explore'
         options={{
           title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name='paperplane.fill' color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='agregar'
+        options={{
+          title: 'Agregar',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name='add-circle' size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name='recetas'
+        options={{
+          title: 'Recetas',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name='book' size={size} color={color} />
+          ),
         }}
       />
     </Tabs>
