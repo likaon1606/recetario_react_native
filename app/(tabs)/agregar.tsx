@@ -1,12 +1,40 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export default function AgregarReceta() {
   const router = useRouter();
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
+  const [imagenUri, setImagenUri] = useState<string | null>(null);
+
+  const seleccionarImagen = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso requerido', 'Se necesita acceso a la galería');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImagenUri(result.assets[0].uri);
+    }
+  };
 
   const guardarReceta = async () => {
     if (!titulo.trim() || !descripcion.trim()) {
@@ -19,6 +47,7 @@ export default function AgregarReceta() {
         id: Date.now().toString(),
         titulo,
         descripcion,
+        imagen: imagenUri, // guarda la URI si hay
       };
 
       const recetasGuardadas = await AsyncStorage.getItem('recetas');
@@ -30,7 +59,8 @@ export default function AgregarReceta() {
       Alert.alert('Éxito', 'Receta guardada correctamente');
       setTitulo('');
       setDescripcion('');
-      router.push('/(tabs)/recetas'); // Navega a la lista
+      setImagenUri(null);
+      router.push('/(tabs)/recetas');
     } catch (error) {
       Alert.alert('Error', 'No se pudo guardar la receta');
       console.error(error);
@@ -40,12 +70,14 @@ export default function AgregarReceta() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Agregar Receta</Text>
+
       <TextInput
         placeholder="Título"
         style={styles.input}
         value={titulo}
         onChangeText={setTitulo}
       />
+
       <TextInput
         placeholder="Descripción"
         style={[styles.input, styles.textArea]}
@@ -54,6 +86,18 @@ export default function AgregarReceta() {
         multiline
         numberOfLines={4}
       />
+
+      <TouchableOpacity style={[styles.button, { marginBottom: 10 }]} onPress={seleccionarImagen}>
+        <Text style={styles.buttonText}>Seleccionar Imagen</Text>
+      </TouchableOpacity>
+
+      {imagenUri && (
+        <Image
+          source={{ uri: imagenUri }}
+          style={{ width: '100%', height: 200, marginBottom: 16, borderRadius: 10 }}
+        />
+      )}
+
       <TouchableOpacity style={styles.button} onPress={guardarReceta}>
         <Text style={styles.buttonText}>Guardar Receta</Text>
       </TouchableOpacity>

@@ -1,37 +1,59 @@
-import { FlatList, ImageBackground, StyleSheet, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import RecetaCard from '../../components/RecetaCard';
 
-const recetas = [
-  {
-    id: '1',
-    titulo: 'Enchiladas Verdes',
-    descripcion: 'Tortillas rellenas de pollo con salsa verde.',
-    imagen: require('../../assets/images/enchiladas.jpg'),
-  },
-  {
-    id: '2',
-    titulo: 'Tacos de Pastor',
-    descripcion: 'Tacos con carne de cerdo marinada y piña.',
-    imagen: require('../../assets/images/tacos.jpg'),
-  },
-];
-
 export default function RecetasScreen() {
+  const [recetas, setRecetas] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+useFocusEffect(
+  React.useCallback(() => {
+    const cargarRecetas = async () => {
+      try {
+        const data = await AsyncStorage.getItem('recetas');
+        const recetasParseadas = data ? JSON.parse(data) : [];
+        setRecetas(recetasParseadas);
+      } catch (error) {
+        console.error('Error al cargar recetas:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarRecetas();
+  }, [])
+);
+
   return (
     <ImageBackground
       source={require('../../assets/images/fondo_recetas.jpg')}
       style={styles.background}
-      resizeMode="contain"
+      resizeMode='cover'
     >
       <View style={styles.overlay}>
         <Text style={styles.title}>Mis Recetas</Text>
 
-        <FlatList
-          data={recetas}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <RecetaCard receta={item} />}
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
+        {loading ? (
+          <ActivityIndicator size='large' color='#E38B29' />
+        ) : recetas.length === 0 ? (
+          <Text style={styles.vacio}>No tienes recetas guardadas aún.</Text>
+        ) : (
+          <FlatList
+            data={recetas}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <RecetaCard receta={item} />}
+            contentContainerStyle={{ paddingBottom: 20 }}
+          />
+        )}
       </View>
     </ImageBackground>
   );
@@ -53,5 +75,11 @@ const styles = StyleSheet.create({
     color: '#A84E0E',
     textAlign: 'center',
     marginBottom: 20,
+  },
+  vacio: {
+    fontSize: 16,
+    color: '#555',
+    textAlign: 'center',
+    marginTop: 40,
   },
 });

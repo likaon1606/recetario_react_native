@@ -3,10 +3,16 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 export default function RecetaCard({ receta }) {
   return (
     <TouchableOpacity style={styles.card}>
-      <Image source={receta.imagen} style={styles.imagen} />
+      {receta.imagen ? (
+        <Image source={{ uri: receta.imagen }} style={styles.imagen} />
+      ) : (
+        <View style={[styles.imagen, styles.placeholder]} />
+      )}
       <View style={styles.info}>
         <Text style={styles.titulo}>{receta.titulo}</Text>
-        <Text style={styles.descripcion} numberOfLines={2}>{receta.descripcion}</Text>
+        <Text style={styles.descripcion} numberOfLines={2}>
+          {receta.descripcion}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -24,6 +30,11 @@ const styles = StyleSheet.create({
   imagen: {
     width: 100,
     height: 100,
+    backgroundColor: '#eee',
+  },
+  placeholder: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   info: {
     flex: 1,
