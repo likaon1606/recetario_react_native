@@ -1,20 +1,16 @@
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
   return (
     <ImageBackground
-      source={require('../assets/images/cocina_fondo_principal.jpg')} // Cambia esto con tu imagen
+      source={require('../assets/images/splash-icon.png')} // tu imagen local
       style={styles.fondo}
-      resizeMode="cover"
+      resizeMode="contain"
     >
       <View style={styles.centro}>
-        <Text style={styles.titulo}>🍽️ Mi Recetario Personal</Text>
-        <TouchableOpacity
-          style={styles.boton}
-          onPress={() => navigation.navigate('Recetas')} // aún no existe pero lo añadiremos
-        >
-          <Text style={styles.textoBoton}>Ver Recetas</Text>
-        </TouchableOpacity>
+        <Text style={styles.texto}>
+          App en tiempo real creo
+        </Text>
       </View>
     </ImageBackground>
   );
@@ -27,27 +23,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   centro: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 25,
-    borderRadius: 12,
-    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    padding: 20,
+    borderRadius: 10,
   },
-  titulo: {
-    fontSize: 28,
-    color: '#fff8dc',
-    marginBottom: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  boton: {
-    backgroundColor: '#f2a154',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  textoBoton: {
+  texto: {
     color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
+    fontSize: 18,
+    textAlign: 'center',
   },
 });

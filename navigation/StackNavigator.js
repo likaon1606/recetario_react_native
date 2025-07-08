@@ -11,8 +11,9 @@ export default function StackNavigator() {
         <Stack.Screen 
           name="Home"
           component={HomeScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: false }} // sin barra superior para que se vea completo
         />
+        {/* Aquí irán más pantallas */}
       </Stack.Navigator>
     </NavigationContainer>
   );
