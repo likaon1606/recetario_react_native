@@ -1,9 +1,7 @@
-import { useRouter } from 'expo-router';
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+// import { useRouter } from 'expo-router';
+import { Image, ImageBackground, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Home() {
-  const router = useRouter();
-
   return (
     <ImageBackground
       source={require('../../assets/images/cocina_fondo_principal.jpg')}
@@ -14,16 +12,17 @@ export default function Home() {
         <Text style={styles.title}>Mi Recetario Personal</Text>
         <Text style={styles.subtitle}>Organiza tus recetas y planifica tus comidas</Text>
 
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/(tabs)/recetas')}>
-            <Text style={styles.buttonText}>Ver Recetas</Text>
+        <View style={styles.contactContainer}>
+          <Text style={styles.contactTitle}>¿Necesitas un sitio web o app a medida?</Text>
+          <Text style={styles.contactText}>Ofrezco desarrollo profesional y personalizado.</Text>
+
+          <TouchableOpacity onPress={() => Linking.openURL('https://wa.me/525532604568')} style={styles.whatsappContainer}>
+            <Image
+              source={require('../../assets/images/whats.png')}
+              style={styles.whatsappIcon}
+            />
+            <Text style={styles.whatsappText}>Contáctame: 5532604568</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/agregar')}>
-            <Text style={styles.buttonText}>Agregar Receta</Text>
-          </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.button} onPress={() => router.push('/calendario')}>
-            <Text style={styles.buttonText}>Calendario Semanal</Text>
-          </TouchableOpacity> */}
         </View>
       </View>
     </ImageBackground>
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   overlay: {
-    backgroundColor: 'rgba(255, 244, 230, 0.85)', // color crema semitransparente
+    backgroundColor: 'rgba(255, 244, 230, 0.85)',
     padding: 30,
     borderRadius: 20,
     width: '85%',
@@ -46,32 +45,49 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#A84E0E', // marrón cálido
+    color: '#A84E0E',
     marginBottom: 8,
-    fontFamily: 'sans-serif',
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: '#6F4E37', // marrón oscuro suave
+    color: '#6F4E37',
     marginBottom: 24,
     textAlign: 'center',
-    fontFamily: 'sans-serif-light',
   },
-  buttonsContainer: {
+  contactContainer: {
     width: '100%',
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
   },
-  button: {
-    backgroundColor: '#E38B29', // naranja suave
-    paddingVertical: 14,
-    borderRadius: 10,
-    marginBottom: 15,
-  },
-  buttonText: {
-    color: '#fff',
+  contactTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
     textAlign: 'center',
-    fontSize: 18,
-    fontWeight: '600',
-    fontFamily: 'sans-serif-medium',
+    marginBottom: 10,
+  },
+  contactText: {
+    fontSize: 15,
+    color: 'blue',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
+  whatsappContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 6,
+  },
+  whatsappIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 6,
+  },
+  whatsappText: {
+    fontSize: 15,
+    color: '#000',
   },
 });
