@@ -10,8 +10,15 @@ export default function RecetaCard({ receta, onEliminar, onEditar }) {
       )}
 
       <View style={styles.info}>
-        <Text style={styles.titulo}>{receta.titulo}</Text>
-        <Text style={styles.descripcion} numberOfLines={2}>{receta.descripcion}</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+          <Text style={styles.platilloLabel}>Platillo: </Text>
+          <Text style={styles.titulo}>{receta.titulo}</Text>
+        </View>
+
+        <Text style={styles.etiqueta}>Ingredientes y preparación:</Text>
+        <Text style={styles.descripcion} numberOfLines={2}>
+          {receta.descripcion}
+        </Text>
 
         <View style={styles.botones}>
           <TouchableOpacity onPress={() => onEditar(receta)}>
@@ -49,14 +56,26 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: 'center',
   },
+  platilloLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
   titulo: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#A84E0E',
   },
+  etiqueta: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#A84E0E',
+    marginTop: 4,
+  },
   descripcion: {
     fontSize: 14,
     color: '#555',
+    marginTop: 5,
   },
   botones: {
     flexDirection: 'row',

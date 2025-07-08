@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     color: '#A84E0E', // marrón cálido
     marginBottom: 8,
     fontFamily: 'sans-serif',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
