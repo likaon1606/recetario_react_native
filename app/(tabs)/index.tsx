@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Home() {
   const router = useRouter();
@@ -15,13 +15,13 @@ export default function Home() {
         <Text style={styles.subtitle}>Organiza tus recetas y planifica tus comidas</Text>
 
         <View style={styles.buttonsContainer}>
-          {/* <TouchableOpacity style={styles.button} onPress={() => router.push('/recetas')}>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/(tabs)/recetas')}>
             <Text style={styles.buttonText}>Ver Recetas</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => router.push('/agregar')}>
             <Text style={styles.buttonText}>Agregar Receta</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/calendario')}>
+          {/* <TouchableOpacity style={styles.button} onPress={() => router.push('/calendario')}>
             <Text style={styles.buttonText}>Calendario Semanal</Text>
           </TouchableOpacity> */}
         </View>
