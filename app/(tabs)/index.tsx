@@ -18,12 +18,8 @@ export default function Home() {
 
         <View style={styles.contactContainer}>
           <Text style={styles.contactTitle}>
-            ¿Necesitas un sitio web o app a medida?
+            Dev. Ariel Fuentes G.
           </Text>
-          <Text style={styles.contactText}>
-            ventas@hechoenlinea.com
-          </Text>
-          <Text style={styles.contactText}>🌐 hechoenlinea.com</Text>
         </View>
       </View>
     </ImageBackground>

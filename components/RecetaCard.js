@@ -1,37 +1,50 @@
+import { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function RecetaCard({ receta, onEliminar, onEditar }) {
+  const [expandida, setExpandida] = useState(false);
+
+  const toggleExpandida = () => {
+    setExpandida(!expandida);
+  };
+
   return (
-    <View style={styles.card}>
-      {receta.imagen ? (
-        <Image source={{ uri: receta.imagen }} style={styles.imagen} />
-      ) : (
-        <View style={[styles.imagen, styles.placeholder]} />
-      )}
+    <TouchableOpacity onPress={toggleExpandida}>
+      <View style={styles.card}>
+        {receta.imagen ? (
+          <Image source={{ uri: receta.imagen }} style={styles.imagen} />
+        ) : (
+          <View style={[styles.imagen, styles.placeholder]} />
+        )}
 
-      <View style={styles.info}>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-          <Text style={styles.platilloLabel}>Platillo: </Text>
-          <Text style={styles.titulo}>{receta.titulo}</Text>
-        </View>
+        <View style={styles.info}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+            <Text style={styles.platilloLabel}>Platillo: </Text>
+            <Text style={styles.titulo}>{receta.titulo}</Text>
+          </View>
 
-        <Text style={styles.etiqueta}>Ingredientes y preparación:</Text>
-        <Text style={styles.descripcion} numberOfLines={2}>
-          {receta.descripcion}
-        </Text>
+          <Text style={styles.etiqueta}>Ingredientes y preparación:</Text>
+          <Text
+            style={styles.descripcion}
+            numberOfLines={expandida ? undefined : 2}
+          >
+            {receta.descripcion}
+          </Text>
 
-        <View style={styles.botones}>
-          <TouchableOpacity onPress={() => onEditar(receta)}>
-            <Text style={styles.botonEditar}>✏️ Editar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => onEliminar(receta.id)}>
-            <Text style={styles.botonEliminar}>🗑 Eliminar</Text>
-          </TouchableOpacity>
+          <View style={styles.botones}>
+            <TouchableOpacity onPress={() => onEditar(receta)}>
+              <Text style={styles.botonEditar}>✏️ Editar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onEliminar(receta.id)}>
+              <Text style={styles.botonEliminar}>🗑 Eliminar</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
+
 
 const styles = StyleSheet.create({
   card: {
